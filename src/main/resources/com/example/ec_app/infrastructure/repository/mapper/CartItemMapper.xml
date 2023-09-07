@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.ec_app.infrastructure.repository.mapper.CartItemMapper">
+  <resultMap id="CartItemsMap" type="com.example.ec_app.entity.CartItemDto">
+    <id property="id" column="id"/>
+    <result property="quantity" column="quantity"/>
+    <association property="product" javaType="com.example.ec_app.model.Product">
+      <id property="productId" column="product_id"/>
+      <result property="productName" column="product_name"/>
+      <result property="imageUrl" column="image_url"/>
+      <result property="price" column="price"/>
+      <result property="description" column="description"/>
+    </association>
+  </resultMap>
+
+  <insert id="addCartItem">
+    INSERT INTO
+      CART_ITEMS (USER_ID, QUANTITY, PRODUCT_ID)
+    VALUES
+      (
+        #{userId},
+        #{quantity},
+        #{productId}
+      )
+  </insert>
+
+  <select id="selectCartItems" parameterType="int" resultMap="CartItemsMap">
+    SELECT
+      C.ID,
+      C.QUANTITY,
+      C.PRODUCT_ID,
+      P.DESCRIPTION,
+      P.IMAGE_URL,
+      P.PRODUCT_NAME,
+      P.PRICE
+    FROM
+      CART_ITEMS AS C
+      INNER JOIN PRODUCTS AS P
+        ON C.PRODUCT_ID = P.PRODUCT_ID
+    WHERE
+      C.USER_ID = #{userId} AND P.STATUS = 0
+  </select>
+
+  <update id="updateQuantity">
+    UPDATE CART_ITEMS SET QUANTITY = #{quantity}
+    WHERE USER_ID = #{userId} AND PRODUCT_ID = #{productId}
+  </update>
+
+  <delete id="removeProduct">
+    DELETE FROM CART_ITEMS WHERE USER_ID = #{userId} AND PRODUCT_ID = #{productId}
+  </delete>
+
+</mapper>
