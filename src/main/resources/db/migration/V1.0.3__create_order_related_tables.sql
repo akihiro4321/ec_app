@@ -9,7 +9,7 @@ create table
 
 create table
   "orders_details" (
-    "order_detail_id" int not null primary key,
+    "order_detail_id" serial not null primary key,
     "order_id" int not null,
     "product_id" int not null,
     "quantity" int not null,

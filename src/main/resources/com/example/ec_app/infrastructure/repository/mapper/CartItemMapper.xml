@@ -51,4 +51,13 @@
     DELETE FROM CART_ITEMS WHERE USER_ID = #{userId} AND PRODUCT_ID = #{productId}
   </delete>
 
+  <delete id="removeCartItems">
+    DELETE FROM CART_ITEMS
+    WHERE ID IN 
+      <foreach item="item" index="index" collection="cartItemIdList"
+      open="(" separator="," close=")">
+        #{item}
+      </foreach>
+  </delete>
+
 </mapper>

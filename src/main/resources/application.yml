@@ -1,6 +1,7 @@
 logging:
   level:
     root: INFO
+    com.example.ec_app.infrastructure.repository.mapper: DEBUG
 
 spring:
   datasource:

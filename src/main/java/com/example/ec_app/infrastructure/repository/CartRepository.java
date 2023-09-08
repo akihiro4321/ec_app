@@ -27,4 +27,8 @@ public class CartRepository {
     public boolean removeProduct(int userId, int productId) {
         return cartItemMapper.removeProduct(userId, productId);
     }
+
+    public boolean removeCartItems(List<Integer> cartItemIdList) {
+        return cartItemMapper.removeCartItems(cartItemIdList);
+    }
 }

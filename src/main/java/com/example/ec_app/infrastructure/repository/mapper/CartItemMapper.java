@@ -8,14 +8,19 @@ import com.example.ec_app.entity.CartItemDto;
 @Mapper
 public interface CartItemMapper {
 
-    public List<CartItemDto> selectCartItems(@Param("userId") int userId);
+        public List<CartItemDto> selectCartItems(@Param("userId") int userId);
 
-    public void addCartItem(@Param("userId") int userId,
-            @Param("productId") int productId, @Param("quantity") int quantity);
+        public void addCartItem(@Param("userId") int userId,
+                        @Param("productId") int productId,
+                        @Param("quantity") int quantity);
 
-    public boolean updateQuantity(@Param("userId") int userId,
-            @Param("productId") int productId, @Param("quantity") int quantity);
+        public boolean updateQuantity(@Param("userId") int userId,
+                        @Param("productId") int productId,
+                        @Param("quantity") int quantity);
 
-    public boolean removeProduct(@Param("userId") int userId,
-            @Param("productId") int productId);
+        public boolean removeProduct(@Param("userId") int userId,
+                        @Param("productId") int productId);
+
+        public boolean removeCartItems(
+                        @Param("cartItemIdList") List<Integer> cartItemIdList);
 }
