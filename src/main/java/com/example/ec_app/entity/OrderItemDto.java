@@ -10,5 +10,5 @@ public class OrderItemDto {
     private int orderId;
     private int userId;
     private OffsetDateTime orderDate;
-    private int subTotal;
+    private int totalCost;
 }

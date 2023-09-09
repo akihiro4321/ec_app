@@ -3,7 +3,7 @@ create table
     "order_id" serial primary key,
     "user_id" int not null,
     "order_date" timestamptz not null,
-    "sub_total" decimal not null,
+    "total_cost" decimal not null,
     constraint "fk_users" foreign key ("user_id") references "users" ("user_id") on delete restrict
   );
 

@@ -33,9 +33,11 @@ export default {
     context.commit('changeQuantity', request);
   },
   async confirmOrder(context, payload) {
-    const orderData = context.getters.getCart;
-    // const orderData = order.cartItems;
-    const response = await window.axios.post('/api/order/checkout', orderData);
+    const request = {
+      cartItems: payload.orderItems,
+      totalCost: payload.totalCost,
+    };
+    const response = await window.axios.post('/api/order/checkout', request);
     if (!(response < 300)) {
       // error ...
     }

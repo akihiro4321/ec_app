@@ -20,13 +20,11 @@ public class OrderService {
 
     public void checkout(int userId, final OrderRequest order) {
         OffsetDateTime checkoutDt = OffsetDateTime.now();
+        OrderItemDto orderDto = OrderItemDto.builder().userId(userId)
+                .orderDate(checkoutDt).totalCost(order.getTotalCost()).build();
+        // TODO トランザクション管理
+        orderRepository.saveOrderItem(orderDto);
         order.getCartItems().stream().forEach(cartItem -> {
-            int subTotal =
-                    cartItem.getProduct().getPrice() * cartItem.getQuantity();
-            // TODO トランザクション管理
-            OrderItemDto orderDto = OrderItemDto.builder().userId(userId)
-                    .orderDate(checkoutDt).subTotal(subTotal).build();
-            orderRepository.saveOrderItem(orderDto);
             orderRepository.saveOrderDetail(orderDto.getOrderId(),
                     cartItem.getProduct().getProductId(),
                     cartItem.getQuantity(), cartItem.getProduct().getPrice());

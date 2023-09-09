@@ -7,4 +7,5 @@ import lombok.Data;
 @Data
 public class OrderRequest {
     private List<CartItem> cartItems;
+    private int totalCost;
 }

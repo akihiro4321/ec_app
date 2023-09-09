@@ -4,9 +4,9 @@
 <mapper namespace="com.example.ec_app.infrastructure.repository.mapper.OrderMapper">
   <insert id="insertOrderItem" useGeneratedKeys="true" keyColumn="order_id" keyProperty="orderId">
     INSERT INTO
-      ORDER_ITEMS (USER_ID, SUB_TOTAL, ORDER_DATE)
+      ORDER_ITEMS (USER_ID, ORDER_DATE, TOTAL_COST)
     VALUES
-      (#{userId}, #{subTotal}, #{orderDate})
+      (#{userId}, #{orderDate}, #{totalCost})
   </insert>
 
   <insert id="insertOrderDetail">

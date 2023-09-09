@@ -66,7 +66,10 @@ export default {
       return totalCost;
     },
     confirmOrder() {
-      this.$store.dispatch('customers/confirmOrder');
+      this.$store.dispatch('customers/confirmOrder', {
+        orderItems: this.orderItems,
+        totalCost: this.totalCost,
+      });
     },
   },
 };
