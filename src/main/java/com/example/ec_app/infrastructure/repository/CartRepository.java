@@ -12,23 +12,25 @@ public class CartRepository {
 
     private final CartItemMapper cartItemMapper;
 
-    public List<CartItemDto> selectCartItems(int userId) {
+    public List<CartItemDto> selectCartItems(final int userId) {
         return cartItemMapper.selectCartItems(userId);
     }
 
-    public void addCartItem(int userId, int productId, int quantity) {
+    public void addCartItem(final int userId, final int productId,
+            final int quantity) {
         cartItemMapper.addCartItem(userId, productId, quantity);
     }
 
-    public boolean updateQuantity(int userId, int productId, int quantity) {
+    public boolean updateQuantity(final int userId, final int productId,
+            final int quantity) {
         return cartItemMapper.updateQuantity(userId, productId, quantity);
     }
 
-    public boolean removeProduct(int userId, int productId) {
+    public boolean removeProduct(final int userId, final int productId) {
         return cartItemMapper.removeProduct(userId, productId);
     }
 
-    public boolean removeCartItems(List<Integer> cartItemIdList) {
+    public boolean removeCartItems(final List<Integer> cartItemIdList) {
         return cartItemMapper.removeCartItems(cartItemIdList);
     }
 }

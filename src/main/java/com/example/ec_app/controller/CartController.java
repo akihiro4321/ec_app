@@ -23,27 +23,28 @@ public class CartController {
 
   @GetMapping("")
   public CartResponse getCart() {
-    int userId = 1;// TODO 認証トークンから取得する
+    final int userId = 1;// TODO 認証トークンから取得する
     return cartService.selectCartItems(userId);
   }
 
   @PostMapping("/addToCart") // TODO レスポンス考える
-  public void addToCart(@RequestBody AddCartRequest request) {
-    int userId = 1;// TODO 認証トークンから取得する
+  public void addToCart(@RequestBody final AddCartRequest request) {
+    final int userId = 1;// TODO 認証トークンから取得する
     cartService.addToCart(userId, request.getProductId(),
         request.getQuantity());
   }
 
   @PutMapping("/changeQuantity") // TODO レスポンス考える
-  public void changeQuantity(@RequestBody ChangeCartRequest request) {
-    int userId = 1;// TODO 認証トークンから取得する
+  public void changeQuantity(@RequestBody final ChangeCartRequest request) {
+    final int userId = 1;// TODO 認証トークンから取得する
     cartService.updateQuantity(userId, request.getProductId(),
         request.getQuantity());
   }
 
   @DeleteMapping("/removeFromCart")
-  public void removeFromCart(@RequestParam(name = "productId") int productId) {
-    int userId = 1;// TODO 認証トークンから取得する
+  public void removeFromCart(
+      @RequestParam(name = "productId") final int productId) {
+    final int userId = 1;// TODO 認証トークンから取得する
     cartService.removeFromCart(userId, productId);
   }
 

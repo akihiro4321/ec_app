@@ -6,7 +6,8 @@
         <p class="order-item-name">{{ productName }}</p>
         <p>Price: ¥{{ price }}</p>
         <p>Quantity: {{ quantity }}</p>
-        <p>Subtotal: ¥{{ subTotal }}</p>
+        <p v-if="!!subTotal">Subtotal: ¥{{ subTotal }}</p>
+        <p v-if="!!orderDate" v-text="getPurchaseDate(orderDate)"></p>
       </div>
     </div>
   </div>
@@ -14,10 +15,26 @@
 
 <script>
 export default {
-  props: ['productName', 'price', 'subTotal', 'quantity', 'imageUrl'],
+  props: [
+    'productName',
+    'price',
+    'subTotal',
+    'quantity',
+    'imageUrl',
+    'orderDate',
+  ],
   computed: {
     imageUrlPath() {
       return require(`@/assets/images/${this.imageUrl}`);
+    },
+  },
+  methods: {
+    getPurchaseDate(val) {
+      return 'Purchase Date: ' + this.dateformat(val);
+    },
+    dateformat(val) {
+      const date = new Date(val);
+      return date.toLocaleDateString();
     },
   },
 };

@@ -14,7 +14,7 @@ public class DemoController {
 
   @GetMapping("/api/demo/sample")
   public List<String> getSample() {
-    List<String> result = sampleService.selectString();
+    final List<String> result = sampleService.selectString();
     System.out.println(result);
 
     return result;

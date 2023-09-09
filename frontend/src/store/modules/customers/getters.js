@@ -10,4 +10,7 @@ export default {
     }
     return isNotEmpty;
   },
+  getOrderHistory(state) {
+    return state.orderHistory;
+  },
 };

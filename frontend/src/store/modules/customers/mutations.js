@@ -23,4 +23,7 @@ export default {
   clearCart(state) {
     state.cart = null;
   },
+  setOrderHistory(state, payload) {
+    state.orderHistory = payload;
+  },
 };

@@ -43,4 +43,12 @@ export default {
     }
     context.commit('clearCart');
   },
+  async loadOrderHistory(context, payload) {
+    const response = await window.axios.get('/api/order/history');
+    const responseData = response.data;
+    if (!(response < 300)) {
+      // error ...
+    }
+    context.commit('setOrderHistory', responseData);
+  },
 };
