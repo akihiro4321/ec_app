@@ -43,9 +43,9 @@ public class CartController {
 
   @DeleteMapping("/removeFromCart")
   public void removeFromCart(
-      @RequestParam(name = "productId") final int productId) {
+      @RequestParam(name = "cartItemId") final int cartItemId) {
     final int userId = 1;// TODO 認証トークンから取得する
-    cartService.removeFromCart(userId, productId);
+    cartService.removeFromCart(userId, cartItemId);
   }
 
 }

@@ -25,6 +25,15 @@
       )
   </insert>
 
+  <select id="selectQuantityByUserAndProductId">
+    SELECT
+      QUANTITY
+    FROM
+      CART_ITEMS
+    WHERE
+      USER_ID = #{userId} AND PRODUCT_ID = #{productId}
+  </select>
+
   <select id="selectCartItems" parameterType="int" resultMap="CartItemsMap">
     SELECT
       C.ID,
@@ -47,13 +56,13 @@
     WHERE USER_ID = #{userId} AND PRODUCT_ID = #{productId}
   </update>
 
-  <delete id="removeProduct">
+  <!-- <delete id="removeProduct">
     DELETE FROM CART_ITEMS WHERE USER_ID = #{userId} AND PRODUCT_ID = #{productId}
-  </delete>
+  </delete> -->
 
   <delete id="removeCartItems">
     DELETE FROM CART_ITEMS
-    WHERE ID IN 
+    WHERE ID IN
       <foreach item="item" index="index" collection="cartItemIdList"
       open="(" separator="," close=")">
         #{item}

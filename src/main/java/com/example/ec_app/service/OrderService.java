@@ -49,8 +49,9 @@ public class OrderService {
         final List<OrdersDetailsDto> orderDetails =
                 orderRepository.selectOrderDetails(orderIds);
         final List<Order> orders = orderItems.stream().map(orderItem -> {
-            final List<OrderedProduct> products =
-                    orderDetails.stream().map(detail -> {
+            final List<OrderedProduct> products = orderDetails.stream()
+                    .filter(e -> e.getOrderId() == orderItem.getOrderId())
+                    .map(detail -> {
                         return OrderedProduct.builder()
                                 .productId(detail.getProduct().getProductId())
                                 .productName(

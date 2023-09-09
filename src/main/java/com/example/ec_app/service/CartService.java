@@ -1,6 +1,7 @@
 package com.example.ec_app.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,14 @@ public class CartService {
 
     public void addToCart(final int userId, final int productId,
             final int quantity) {
-        cartRepository.addCartItem(userId, productId, quantity);
+        final Optional<Integer> qty = cartRepository
+                .selectQuantityByUserAndProductId(userId, productId);
+        if (qty.isPresent()) {
+            cartRepository.updateQuantity(userId, productId,
+                    qty.get() + quantity);
+        } else {
+            cartRepository.addCartItem(userId, productId, quantity);
+        }
     }
 
     public void updateQuantity(final int userId, final int productId,
@@ -38,7 +46,7 @@ public class CartService {
         cartRepository.updateQuantity(userId, productId, quantity);
     }
 
-    public void removeFromCart(final int userId, final int productId) {
-        cartRepository.removeProduct(userId, productId);
+    public void removeFromCart(final int userId, final int cartItemId) {
+        cartRepository.removeCartItems(List.of(cartItemId));
     }
 }
