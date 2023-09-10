@@ -2,8 +2,8 @@ package com.example.ec_app.infrastructure.repository;
 
 import java.util.List;
 import org.springframework.stereotype.Repository;
+import com.example.ec_app.entity.OrderDetailDto;
 import com.example.ec_app.entity.OrderItemDto;
-import com.example.ec_app.entity.OrdersDetailsDto;
 import com.example.ec_app.infrastructure.repository.mapper.OrderMapper;
 import lombok.RequiredArgsConstructor;
 
@@ -27,7 +27,7 @@ public class OrderRepository {
         return orderMapper.selectOrderItemsByUserId(userId);
     }
 
-    public List<OrdersDetailsDto> selectOrderDetails(
+    public List<OrderDetailDto> selectOrderDetails(
             final List<Integer> orderIds) {
         return orderMapper.selectOrderDetails(orderIds);
     }

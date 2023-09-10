@@ -4,7 +4,7 @@ import com.example.ec_app.model.Product;
 import lombok.Data;
 
 @Data
-public class OrdersDetailsDto {
+public class OrderDetailDto {
     private int orderDetailId;
     private int orderId;
     private Product product;

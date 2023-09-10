@@ -12,7 +12,7 @@ create table
     "image_url" varchar(500) default null,
     "product_name" varchar(500) default null,
     "price" decimal not null,
-    "status" integer not null default 0,
+    "disabled" integer not null default 0,
     "created_at" timestamptz not null default current_timestamp,
     "category_id" integer not null,
     constraint "fk_categories" foreign key ("category_id") references "categories" ("category_id") on delete restrict

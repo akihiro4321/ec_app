@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.ec_app.infrastructure.repository.mapper.OrderMapper">
-  <resultMap id="OrderDetailsMap" type="com.example.ec_app.entity.OrdersDetailsDto">
+  <resultMap id="OrderDetailsMap" type="com.example.ec_app.entity.OrderDetailDto">
     <id property="orderDetailId" column="order_detail_id"/>
     <result property="orderId" column="order_id"/>
     <result property="quantity" column="quantity"/>

@@ -6,7 +6,7 @@ create table
     "last_name" varchar(255) not null,
     "password" varchar(255) not null,
     "role_id" integer not null,
-    "status" integer not null default 0,
+    "disabled" integer not null default 0,
     "created_at" timestamptz not null default current_timestamp,
     "updated_at" timestamptz not null default current_timestamp,
     primary key ("user_id")

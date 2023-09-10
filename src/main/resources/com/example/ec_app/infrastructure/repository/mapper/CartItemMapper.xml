@@ -48,7 +48,7 @@
       INNER JOIN PRODUCTS AS P
         ON C.PRODUCT_ID = P.PRODUCT_ID
     WHERE
-      C.USER_ID = #{userId} AND P.STATUS = 0
+      C.USER_ID = #{userId} AND P.DISABLED = 0
   </select>
 
   <update id="updateQuantity">
