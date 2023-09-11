@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.example.ec_app.entity.OrderDetailDto;
 import com.example.ec_app.entity.OrderItemDto;
 import com.example.ec_app.infrastructure.repository.CartRepository;
@@ -20,66 +21,50 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderService {
 
-        private final ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
-        private final OrderRepository orderRepository;
-        private final CartRepository cartRepository;
+    private final OrderRepository orderRepository;
+    private final CartRepository cartRepository;
 
-        public void checkout(final int userId, final OrderRequest order) {
-                final OffsetDateTime checkoutDt = OffsetDateTime.now();
-                final OrderItemDto orderDto = OrderItemDto.builder()
-                                .userId(userId).orderDate(checkoutDt)
-                                .totalCost(order.getTotalCost()).build();
-                // TODO トランザクション管理
-                orderRepository.saveOrderItem(orderDto);
-                order.getCartItems().stream().forEach(cartItem -> {
-                        orderRepository.saveOrderDetail(orderDto.getOrderId(),
-                                        cartItem.getProduct().getProductId(),
-                                        cartItem.getQuantity(),
-                                        cartItem.getProduct().getPrice());
-                });
-                final List<Integer> cartItemIdList = order.getCartItems()
-                                .stream().map(CartItem::getId)
-                                .collect(Collectors.toList());
-                cartRepository.removeCartItems(cartItemIdList);
-        }
+    @Transactional
+    public void checkout(final int userId, final OrderRequest order) {
+        final OffsetDateTime checkoutDt = OffsetDateTime.now();
+        final OrderItemDto orderDto = OrderItemDto.builder().userId(userId)
+                .orderDate(checkoutDt).totalCost(order.getTotalCost()).build();
+        // TODO トランザクション管理
+        orderRepository.saveOrderItem(orderDto);
+        order.getCartItems().stream().forEach(cartItem -> {
+            orderRepository.saveOrderDetail(orderDto.getOrderId(),
+                    cartItem.getProduct().getProductId(),
+                    cartItem.getQuantity(), cartItem.getProduct().getPrice());
+        });
+        final List<Integer> cartItemIdList = order.getCartItems().stream()
+                .map(CartItem::getId).collect(Collectors.toList());
+        cartRepository.removeCartItems(cartItemIdList);
+    }
 
-        public OrderHistoryResponse getOrderHistory(final int userId) {
-                final List<OrderItemDto> orderItems = orderRepository
-                                .selectOrderItemsByUserId(userId);
-                final List<Integer> orderIds = orderItems.stream()
-                                .map(OrderItemDto::getOrderId)
-                                .collect(Collectors.toList());
-                final List<OrderDetailDto> orderDetails =
-                                orderRepository.selectOrderDetails(orderIds);
-                final List<Order> orders =
-                                orderItems.stream().map(orderItem -> {
-                                        final List<OrderedProduct> products =
-                                                        orderDetails.stream()
-                                                                        .filter(e -> e.getOrderId() == orderItem
-                                                                                        .getOrderId())
-                                                                        .map(detail -> {
-                                                                                return OrderedProduct
-                                                                                                .builder()
-                                                                                                .productId(detail
-                                                                                                                .getProduct()
-                                                                                                                .getProductId())
-                                                                                                .productName(detail
-                                                                                                                .getProduct()
-                                                                                                                .getProductName())
-                                                                                                .imageUrl(detail.getProduct()
-                                                                                                                .getImageUrl())
-                                                                                                .orderPrice(detail
-                                                                                                                .getOrderPrice())
-                                                                                                .quantity(detail.getQuantity())
-                                                                                                .build();
-                                                                        })
-                                                                        .collect(Collectors
-                                                                                        .toList());
-                                        return new Order(orderItem, products);
-                                }).collect(Collectors.toList());
-                final OrderHistoryResponse res =
-                                new OrderHistoryResponse(orders);
-                return res;
-        }
+    public OrderHistoryResponse getOrderHistory(final int userId) {
+        final List<OrderItemDto> orderItems =
+                orderRepository.selectOrderItemsByUserId(userId);
+        final List<Integer> orderIds = orderItems.stream()
+                .map(OrderItemDto::getOrderId).collect(Collectors.toList());
+        final List<OrderDetailDto> orderDetails =
+                orderRepository.selectOrderDetails(orderIds);
+        final List<Order> orders = orderItems.stream().map(orderItem -> {
+            final List<OrderedProduct> products = orderDetails.stream()
+                    .filter(e -> e.getOrderId() == orderItem.getOrderId())
+                    .map(detail -> {
+                        return OrderedProduct.builder()
+                                .productId(detail.getProduct().getProductId())
+                                .productName(
+                                        detail.getProduct().getProductName())
+                                .imageUrl(detail.getProduct().getImageUrl())
+                                .orderPrice(detail.getOrderPrice())
+                                .quantity(detail.getQuantity()).build();
+                    }).collect(Collectors.toList());
+            return new Order(orderItem, products);
+        }).collect(Collectors.toList());
+        final OrderHistoryResponse res = new OrderHistoryResponse(orders);
+        return res;
+    }
 }

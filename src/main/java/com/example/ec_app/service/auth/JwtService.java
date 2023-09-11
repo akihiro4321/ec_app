@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import com.example.ec_app.entity.UserDto;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -23,23 +23,22 @@ public class JwtService {
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long refreshExpiration;
 
-    public String generateToken(final UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(final UserDto user) {
+        return generateToken(new HashMap<>(), user);
     }
 
     public String generateToken(final Map<String, Object> extraClaims,
-            final UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, jwtExpiration);
+            final UserDto user) {
+        return buildToken(extraClaims, user, jwtExpiration);
     }
 
-    public String generateRefreshToken(final UserDetails userDetails) {
-        return buildToken(new HashMap<>(), userDetails, refreshExpiration);
+    public String generateRefreshToken(final UserDto user) {
+        return buildToken(new HashMap<>(), user, refreshExpiration);
     }
 
     private String buildToken(final Map<String, Object> extraClaims,
-            final UserDetails userDetails, final long expiration) {
-        return Jwts.builder().setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+            final UserDto user, final long expiration) {
+        return Jwts.builder().setClaims(extraClaims).setSubject(user.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(
                         new Date(System.currentTimeMillis() + expiration))

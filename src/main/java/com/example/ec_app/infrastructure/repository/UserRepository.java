@@ -17,6 +17,7 @@ public class UserRepository {
     };
 
     public void save(final UserDto newUser) {
-        userMapper.save(newUser);
+        userMapper.saveUser(newUser);
+        userMapper.saveRoles(newUser.getUserId(), newUser.getRoleList());
     }
 }

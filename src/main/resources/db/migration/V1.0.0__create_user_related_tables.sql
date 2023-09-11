@@ -5,7 +5,6 @@ create table
     "first_name" varchar(255) not null,
     "last_name" varchar(255) not null,
     "password" varchar(255) not null,
-    "role_id" integer not null,
     "disabled" integer not null default 0,
     "created_at" timestamptz not null default current_timestamp,
     "updated_at" timestamptz not null default current_timestamp,
@@ -14,7 +13,15 @@ create table
 
 create table
   "roles" (
-    "role_id" serial primary key,
-    "role_name" varchar(255) not null,
-    "active" integer not null default 0
+    "role_id" integer primary key,
+    "role_name" varchar(255) not null
   );
+
+create table
+  "user_role" (
+    "user_id" integer,
+    "role_id" integer,
+    constraint "pk_user_role" primary key ("user_id", "role_id"),
+    constraint "fk_user_role_user_id" foreign key ("user_id") references users ("user_id"),
+    constraint "fk_user_role_role_id" foreign key ("role_id") references roles ("role_id")
+  )
