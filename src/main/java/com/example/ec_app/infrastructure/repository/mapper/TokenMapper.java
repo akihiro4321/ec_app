@@ -10,5 +10,7 @@ public interface TokenMapper {
 
     public void save(final TokenDto token);
 
+    public void updateToken(final TokenDto token);
+
     Optional<TokenDto> findByToken(@Param("token") String token);
 }

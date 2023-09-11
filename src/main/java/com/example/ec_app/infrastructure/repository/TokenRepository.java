@@ -16,6 +16,10 @@ public class TokenRepository {
         tokenMapper.save(token);
     }
 
+    public void updateToken(final TokenDto token) {
+        tokenMapper.updateToken(token);
+    }
+
     public Optional<TokenDto> findByToken(final String token) {
         return tokenMapper.findByToken(token);
     };

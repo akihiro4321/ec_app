@@ -1,8 +1,8 @@
 create table
   "tokens" (
     "id" serial primary key,
-    "expired" integer default 0,
-    "revoked" integer default 0,
+    "expired" bool default false,
+    "revoked" bool default false,
     "token" varchar(255) null,
     "token_type" varchar(255) null,
     "user_id" integer not null,

@@ -34,4 +34,16 @@
       TOKEN = #{token}
   </select>
 
+
+  <update id="updateToken" parameterType="com.example.ec_app.entity.TokenDto">
+    UPDATE
+      TOKENS
+    SET
+      (TOKEN, TOKEN_TYPE, EXPIRED, REVOKED)
+    =
+      (#{token}, #{tokenType}, #{expired}, #{revoked})
+    WHERE
+      USER_ID = #{user.userId}
+  </update>
+
 </mapper>
