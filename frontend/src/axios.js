@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 const axiosInstance = axios.create({
   withCredentials: true,
@@ -7,9 +7,9 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(function (config) {
   config.headers.common = {
-    Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-    "Content-Type": "application/json",
-    Accept: "application/json",
+    Authorization: `Bearer ${localStorage.getItem('token')}`,
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
   };
   return config;
 });

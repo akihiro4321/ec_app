@@ -11,12 +11,7 @@
 </template>
 
 <script>
-import SmallCard from '../ui/SmallCard.vue';
-
 export default {
-  components: {
-    SmallCard,
-  },
   props: ['id', 'productName', 'description', 'price', 'imageUrl'],
   computed: {
     productDetailsLink() {
