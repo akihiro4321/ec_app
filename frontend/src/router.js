@@ -8,6 +8,7 @@ import CustomerOrder from './pages/customer/CustomerOrder.vue';
 import OrderHistory from './pages/customer/OrderHistory.vue';
 import ProductDetail from './pages/product/ProductDetail.vue';
 import ProductList from './pages/product/ProductList.vue';
+import store from './store/index.js';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -15,13 +16,25 @@ const router = createRouter({
     { path: '/', redirect: '/products' },
     { path: '/products', component: ProductList },
     { path: '/products/:id', component: ProductDetail, props: true },
-    { path: '/orders', component: CustomerOrder },
-    { path: '/orders/history', component: OrderHistory },
-    { path: '/cart', component: CustomerCart },
+    { path: '/orders', component: CustomerOrder, meta: { requiresAuth: true } },
+    {
+      path: '/orders/history',
+      component: OrderHistory,
+      meta: { requiresAuth: true },
+    },
+    { path: '/cart', component: CustomerCart, meta: { requiresAuth: true } },
     { path: '/contact', component: ContactShop },
-    { path: '/auth', component: UserAuth },
+    { path: '/auth', component: UserAuth, meta: { requiresAuth: false } },
     { path: '/:notFound(.*)', component: NotFound },
   ],
+});
+
+router.beforeEach(function (to, from, next) {
+  if (to.meta.requiresAuth && !store.getters.isAuthenticated) {
+    next('/auth');
+  } else {
+    next();
+  }
 });
 
 export default router;

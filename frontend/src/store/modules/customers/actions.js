@@ -49,7 +49,6 @@ export default {
     if (!(response < 300)) {
       // error ...
     }
-    console.log(responseData);
     context.commit('setOrderHistory', responseData);
   },
 };
