@@ -13,7 +13,7 @@
     </association>
   </resultMap>
 
-  <insert id="save" parameterType="com.example.ec_app.entity.TokenDto">
+  <insert id="insertToken" parameterType="com.example.ec_app.entity.TokenDto">
     INSERT INTO
       TOKENS (TOKEN, TOKEN_TYPE, USER_ID)
     VALUES
@@ -43,7 +43,22 @@
     =
       (#{token}, #{tokenType}, #{expired}, #{revoked})
     WHERE
-      USER_ID = #{user.userId}
+      ID = #{id}
   </update>
+
+
+  <select id="findAllValidTokenByUser">
+    SELECT
+      ID,
+      TOKEN,
+      TOKEN_TYPE,
+      EXPIRED,
+      REVOKED,
+      USER_ID
+    FROM
+      TOKENS
+    WHERE
+      USER_ID = #{userId} AND EXPIRED = FALSE AND REVOKED = FALSE
+  </select>
 
 </mapper>

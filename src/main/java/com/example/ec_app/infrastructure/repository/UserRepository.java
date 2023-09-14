@@ -20,4 +20,8 @@ public class UserRepository {
         userMapper.saveUser(newUser);
         userMapper.saveRoles(newUser.getUserId(), newUser.getRoleList());
     }
+
+    public boolean existsEmail(final String email) {
+        return userMapper.existsEmail(email) != 0;
+    }
 }

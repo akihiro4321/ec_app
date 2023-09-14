@@ -1,6 +1,7 @@
 package com.example.ec_app.service;
 
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
@@ -44,26 +45,32 @@ public class OrderService {
     }
 
     public OrderHistoryResponse getOrderHistory(final int userId) {
+        List<Order> orders;
         final List<OrderItemDto> orderItems =
                 orderRepository.selectOrderItemsByUserId(userId);
-        final List<Integer> orderIds = orderItems.stream()
-                .map(OrderItemDto::getOrderId).collect(Collectors.toList());
-        final List<OrderDetailDto> orderDetails =
-                orderRepository.selectOrderDetails(orderIds);
-        final List<Order> orders = orderItems.stream().map(orderItem -> {
-            final List<OrderedProduct> products = orderDetails.stream()
-                    .filter(e -> e.getOrderId() == orderItem.getOrderId())
-                    .map(detail -> {
-                        return OrderedProduct.builder()
-                                .productId(detail.getProduct().getProductId())
-                                .productName(
-                                        detail.getProduct().getProductName())
-                                .imageUrl(detail.getProduct().getImageUrl())
-                                .orderPrice(detail.getOrderPrice())
-                                .quantity(detail.getQuantity()).build();
-                    }).collect(Collectors.toList());
-            return new Order(orderItem, products);
-        }).collect(Collectors.toList());
+        if (!orderItems.isEmpty()) {
+            final List<Integer> orderIds = orderItems.stream()
+                    .map(OrderItemDto::getOrderId).collect(Collectors.toList());
+            final List<OrderDetailDto> orderDetails =
+                    orderRepository.selectOrderDetails(orderIds);
+            orders = orderItems.stream().map(orderItem -> {
+                final List<OrderedProduct> products = orderDetails.stream()
+                        .filter(e -> e.getOrderId() == orderItem.getOrderId())
+                        .map(detail -> {
+                            return OrderedProduct.builder()
+                                    .productId(detail.getProduct().getProductId())
+                                    .productName(
+                                            detail.getProduct().getProductName())
+                                    .imageUrl(detail.getProduct().getImageUrl())
+                                    .orderPrice(detail.getOrderPrice())
+                                    .quantity(detail.getQuantity()).build();
+                        }).collect(Collectors.toList());
+                return new Order(orderItem, products);
+            }).collect(Collectors.toList());
+        } else {
+            orders = Collections.emptyList();
+        }
+
         final OrderHistoryResponse res = new OrderHistoryResponse(orders);
         return res;
     }

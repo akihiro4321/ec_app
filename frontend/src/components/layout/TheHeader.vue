@@ -5,10 +5,10 @@
         <router-link to="/">EC Site</router-link>
       </h1>
       <ul>
-        <li>
+        <li v-if="isLoggedIn">
           <router-link to="/cart">Cart</router-link>
         </li>
-        <li>
+        <li v-if="isLoggedIn">
           <router-link to="/orders/history">Order History</router-link>
         </li>
         <li v-if="isLoggedIn">

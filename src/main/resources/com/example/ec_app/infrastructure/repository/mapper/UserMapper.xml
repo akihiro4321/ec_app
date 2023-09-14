@@ -50,4 +50,9 @@
       </foreach>
   </insert>
 
+
+  <select id="existsEmail">
+    SELECT COUNT(DISTINCT EMAIL) FROM USERS WHERE EMAIL = #{email}
+  </select>
+
 </mapper>

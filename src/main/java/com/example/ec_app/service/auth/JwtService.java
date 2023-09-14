@@ -4,9 +4,12 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import com.example.ec_app.entity.UserDto;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -23,6 +26,15 @@ public class JwtService {
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long refreshExpiration;
 
+    public String extractUsername(final String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public <T> T extractClaim(final String token, final Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
     public String generateToken(final UserDto user) {
         return generateToken(new HashMap<>(), user);
     }
@@ -34,6 +46,11 @@ public class JwtService {
 
     public String generateRefreshToken(final UserDto user) {
         return buildToken(new HashMap<>(), user, refreshExpiration);
+    }
+
+    public boolean isTokenValid(final String token, final UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
     private String buildToken(final Map<String, Object> extraClaims,
@@ -48,5 +65,22 @@ public class JwtService {
     private Key getSignInKey() {
         final byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private Claims extractAllClaims(final String token) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    private boolean isTokenExpired(final String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(final String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 }

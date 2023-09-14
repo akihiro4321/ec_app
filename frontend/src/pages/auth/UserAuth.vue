@@ -5,6 +5,9 @@
         <label for="email">E-Mail</label>
         <input type="email" id="email" v-model.trim="email" />
       </div>
+      <p v-if="existsEmail">
+        Entered already exists. Please enter a different email.
+      </p>
       <div class="form-control">
         <label for="password">Password</label>
         <input type="password" id="password" v-model.trim="password" />
@@ -41,6 +44,7 @@ export default {
       lastName: '',
       formIsValid: true,
       mode: 'login',
+      existsEmail: false,
       error: null,
     };
   },
@@ -63,6 +67,7 @@ export default {
   methods: {
     async submitForm() {
       this.formIsValid = true;
+      this.existsEmail = false;
       if (
         this.email === '' ||
         !this.email.includes('@') ||
@@ -90,6 +95,13 @@ export default {
         if (this.mode === 'login') {
           await this.$store.dispatch('login', actionPayload);
         } else {
+          const isExists = await this.$store.dispatch('existsEmail', {
+            email: this.email,
+          });
+          if (isExists) {
+            this.existsEmail = true;
+            return;
+          }
           await this.$store.dispatch('signup', actionPayload);
         }
         const redirectUrl = '/' + (this.$route.query.redirect || 'products');

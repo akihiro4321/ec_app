@@ -15,4 +15,6 @@ public interface UserMapper {
 
     public void saveRoles(@Param("userId") int userId,
             @Param("roleList") List<String> roleList);
+
+    public Integer existsEmail(final String email);
 }

@@ -38,4 +38,10 @@ export default {
     localStorage.removeItem('token');
     context.commit('setToken', null);
   },
+  async existsEmail(context, payload) {
+    const response = await window.axios.get(
+      `/api/auth/existsEmail?email=${payload.email}`
+    );
+    return response.data;
+  },
 };

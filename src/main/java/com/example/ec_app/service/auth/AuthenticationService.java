@@ -19,54 +19,73 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
-    private final TokenRepository tokenRepository;
-    private final JwtService jwtService;
+	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
+	private final AuthenticationManager authenticationManager;
+	private final TokenRepository tokenRepository;
+	private final JwtService jwtService;
 
-    @Transactional
-    public AuthenticationResponse register(final RegisterRequest request) {
-        final var user = UserDto.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .roleList(List.of("ROLE_GENERAL"))
-                .build();
-        userRepository.save(user);
+	@Transactional
+	public AuthenticationResponse register(final RegisterRequest request) {
+		final var user = UserDto.builder()
+				.firstName(request.getFirstName())
+				.lastName(request.getLastName())
+				.email(request.getEmail())
+				.password(passwordEncoder.encode(request.getPassword()))
+				.roleList(List.of("ROLE_GENERAL"))
+				.build();
+		userRepository.save(user);
 
-        final var jwtToken = jwtService.generateToken(user);
-        final var refreshToken = jwtService.generateRefreshToken(user);
-        saveUserToken(user, jwtToken);
+		final var jwtToken = jwtService.generateToken(user);
+		final var refreshToken = jwtService.generateRefreshToken(user);
+		saveNewToken(user, jwtToken);
 
-        return AuthenticationResponse.builder().accessToken(jwtToken)
-                .refreshToken(refreshToken)
-                .build();
-    }
+		return AuthenticationResponse.builder().accessToken(jwtToken)
+				.refreshToken(refreshToken)
+				.build();
+	}
 
-    public AuthenticationResponse authenticate(final AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()));
-        final UserDto user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-        final String jwtToken = jwtService.generateToken(user);
-        final String refreshToken = jwtService.generateRefreshToken(user);
-        return AuthenticationResponse.builder()
-                .accessToken(jwtToken)
-                .refreshToken(refreshToken)
-                .build();
-    }
+	public AuthenticationResponse authenticate(final AuthenticationRequest request) {
+		authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(
+						request.getEmail(),
+						request.getPassword()));
+		final UserDto user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+		final String jwtToken = jwtService.generateToken(user);
+		final String refreshToken = jwtService.generateRefreshToken(user);
+		revokeAllUserTokens(user);// ユーザーに紐づく他の有効なトークンは無効化(expire, revoke)
+		saveNewToken(user, jwtToken);// 新しいトークンを登録
+		return AuthenticationResponse.builder()
+				.accessToken(jwtToken)
+				.refreshToken(refreshToken)
+				.build();
+	}
 
-    private void saveUserToken(final UserDto user, final String jwtToken) {
-        final var token = TokenDto.builder()
-                .user(user)
-                .token(jwtToken)
-                .tokenType(TokenType.BEARER)
-                .expired(false)
-                .revoked(false)
-                .build();
-        tokenRepository.save(token);
-    }
+	public boolean existsEmail(final String email) {
+		return userRepository.existsEmail(email);
+	}
+
+
+	private void saveNewToken(final UserDto user, final String jwtToken) {
+		final var token = TokenDto.builder()
+				.user(user)
+				.token(jwtToken)
+				.tokenType(TokenType.BEARER)
+				.expired(false)
+				.revoked(false)
+				.build();
+		tokenRepository.save(token);
+	}
+
+	private void revokeAllUserTokens(final UserDto user) {
+		final var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getUserId());
+		if (validUserTokens.isEmpty()) {
+			return;
+		}
+		validUserTokens.forEach(token -> {
+			token.setExpired(true);
+			token.setRevoked(true);
+		});
+		tokenRepository.saveAll(validUserTokens);
+	};
 }

@@ -6,9 +6,11 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(function (config) {
-  config.headers.common = {
-    Authorization: `Bearer ${localStorage.getItem('token')}`,
-    'Content-Type': 'application/json',
+  config.headers = {
+    Authorization:
+      localStorage.getItem('token') != null
+        ? `Bearer ${localStorage.getItem('token')}`
+        : null,
     Accept: 'application/json',
   };
   return config;
