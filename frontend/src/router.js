@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
+import InternalError from './pages/InternalError.vue';
 import NotFound from './pages/NotFound.vue';
 import UserAuth from './pages/auth/UserAuth.vue';
 import ContactShop from './pages/customer/ContactShop.vue';
@@ -25,6 +26,7 @@ const router = createRouter({
     { path: '/cart', component: CustomerCart, meta: { requiresAuth: true } },
     { path: '/contact', component: ContactShop },
     { path: '/auth', component: UserAuth, meta: { requiresAuth: false } },
+    { path: '/error', component: InternalError },
     { path: '/:notFound(.*)', component: NotFound },
   ],
 });

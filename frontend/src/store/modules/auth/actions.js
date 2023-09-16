@@ -24,10 +24,6 @@ export default {
       firstName: payload.firstName, // signup only
       lastName: payload.lastName, // signup only
     });
-
-    if (!(response < 300)) {
-      // TODO handle error ...
-    }
     const responseData = response.data;
     const token = responseData.access_token;
     localStorage.setItem('token', token);

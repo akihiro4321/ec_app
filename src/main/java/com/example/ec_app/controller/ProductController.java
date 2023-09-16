@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 
   private final ProductService productService;
+  private final boolean flag = true;
 
   @GetMapping("/products")
   public List<ProductResponse> getProducts() {

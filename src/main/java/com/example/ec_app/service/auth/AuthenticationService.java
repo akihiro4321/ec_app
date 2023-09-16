@@ -3,6 +3,7 @@ package com.example.ec_app.service.auth;
 import java.util.List;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,10 +47,15 @@ public class AuthenticationService {
 	}
 
 	public AuthenticationResponse authenticate(final AuthenticationRequest request) {
-		authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(
-						request.getEmail(),
-						request.getPassword()));
+		try {
+			authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(
+							request.getEmail(),
+							request.getPassword()));
+		} catch (final AuthenticationException e) {
+			throw e;
+		}
+
 		final UserDto user = userRepository.findByEmail(request.getEmail()).orElseThrow();
 		final String jwtToken = jwtService.generateToken(user);
 		final String refreshToken = jwtService.generateRefreshToken(user);
