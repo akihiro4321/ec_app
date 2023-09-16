@@ -16,12 +16,12 @@ export default {
     // handle response
   },
   async removeFromCart(context, payload) {
-    const productId = Number(payload);
+    const cartItemId = Number(payload);
     await window.axios.delete('/api/cart/removeFromCart', {
-      params: { productId: productId },
+      params: { cartItemId: cartItemId },
     });
     // handle response
-    context.commit('removeFromCart', productId);
+    context.commit('removeFromCart', cartItemId);
   },
   async changeQuantity(context, payload) {
     const request = {
@@ -33,12 +33,22 @@ export default {
     context.commit('changeQuantity', request);
   },
   async confirmOrder(context, payload) {
-    const orderData = context.getters.getCart;
-    // const orderData = order.cartItems;
-    const response = await window.axios.post('/api/order/checkout', orderData);
+    const request = {
+      cartItems: payload.cartItems,
+      totalCost: payload.totalCost,
+    };
+    const response = await window.axios.post('/api/order/checkout', request);
     if (!(response < 300)) {
       // error ...
     }
     context.commit('clearCart');
+  },
+  async loadOrderHistory(context, payload) {
+    const response = await window.axios.get('/api/order/history');
+    const responseData = response.data;
+    if (!(response < 300)) {
+      // error ...
+    }
+    context.commit('setOrderHistory', responseData);
   },
 };

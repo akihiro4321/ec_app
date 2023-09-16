@@ -80,9 +80,9 @@ export default {
         quantity,
       });
     },
-    removeFromCart(productId) {
+    removeFromCart(cartItemId) {
       this.cartItems = this.cartItems.filter(
-        (cartItem) => cartItem.product.productId != productId
+        (cartItem) => cartItem.id != cartItemId
       );
       this.totalCost = this.calcTotalCost();
     },

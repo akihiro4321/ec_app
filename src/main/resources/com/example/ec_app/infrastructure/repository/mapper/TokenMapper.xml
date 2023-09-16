@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.ec_app.infrastructure.repository.mapper.TokenMapper">
+  <resultMap id="TokenMap" type="com.example.ec_app.entity.TokenDto">
+    <id property="id" column="id"/>
+    <result property="token" column="token"/>
+    <result property="tokenType" column="token_type"/>
+    <result property="expired" column="expired"/>
+    <result property="revoked" column="revoked"/>
+    <association property="user" javaType="com.example.ec_app.entity.UserDto">
+      <id property="userId" column="user_id"/>
+    </association>
+  </resultMap>
+
+  <insert id="insertToken" parameterType="com.example.ec_app.entity.TokenDto">
+    INSERT INTO
+      TOKENS (TOKEN, TOKEN_TYPE, USER_ID)
+    VALUES
+      (#{token}, #{tokenType}, #{user.userId})
+  </insert>
+
+  <select id="findByToken" resultMap="TokenMap">
+    SELECT
+      ID,
+      TOKEN,
+      TOKEN_TYPE,
+      EXPIRED,
+      REVOKED,
+      USER_ID
+    FROM
+      TOKENS
+    WHERE
+      TOKEN = #{token}
+  </select>
+
+
+  <update id="updateToken" parameterType="com.example.ec_app.entity.TokenDto">
+    UPDATE
+      TOKENS
+    SET
+      (TOKEN, TOKEN_TYPE, EXPIRED, REVOKED)
+    =
+      (#{token}, #{tokenType}, #{expired}, #{revoked})
+    WHERE
+      ID = #{id}
+  </update>
+
+
+  <select id="findAllValidTokenByUser">
+    SELECT
+      ID,
+      TOKEN,
+      TOKEN_TYPE,
+      EXPIRED,
+      REVOKED,
+      USER_ID
+    FROM
+      TOKENS
+    WHERE
+      USER_ID = #{userId} AND EXPIRED = FALSE AND REVOKED = FALSE
+  </select>
+
+</mapper>

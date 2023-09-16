@@ -3,12 +3,12 @@
     <!-- 商品説明欄 -->
     <img class="product-image" :src="imageUrl" alt="Product Image" />
     <div class="product-info">
-      <h1>{{ productName }}</h1>
+      <h1>{{ selectedProduct.productName }}</h1>
     </div>
-    <div class="price">¥{{ price }}</div>
+    <div class="price">¥{{ selectedProduct.price }}</div>
     <div class="description">
       <h2>Description</h2>
-      <p>{{ description }}</p>
+      <p>{{ selectedProduct.description }}</p>
     </div>
     <base-button type="button" mode="add-to-cart" @click="addToCart"
       >Add to Cart</base-button
@@ -56,28 +56,17 @@ export default {
   props: ['id'],
   data() {
     return {
-      selectedProduct: null,
+      selectedProduct: {
+        productName: '',
+        description: '',
+        price: 0,
+        imageUrl: '',
+      },
+      imageUrl: '',
     };
-  },
-  computed: {
-    productName() {
-      return this.selectedProduct.productName;
-    },
-    description() {
-      return this.selectedProduct.description;
-    },
-    price() {
-      return this.selectedProduct.price;
-    },
-    imageUrl() {
-      return require(`@/assets/images/${this.selectedProduct.imageUrl}`);
-    },
   },
   created() {
     this.loadProducts();
-    this.selectedProduct = this.$store.getters['products/products'].find(
-      (product) => product.productId === Number(this.id)
-    );
   },
   methods: {
     addToCart() {
@@ -89,6 +78,10 @@ export default {
     },
     async loadProducts() {
       await this.$store.dispatch('products/loadProducts');
+      this.selectedProduct = this.$store.getters['products/products'].find(
+        (product) => product.productId === Number(this.id)
+      );
+      this.imageUrl = require(`@/assets/images/${this.selectedProduct.imageUrl}`);
     },
   },
 };

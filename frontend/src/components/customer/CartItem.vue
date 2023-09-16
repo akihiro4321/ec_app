@@ -34,8 +34,8 @@ export default {
       this.$emit('changeQuantity', this.productId, Number(event.target.value));
     },
     async removeFromCart() {
-      this.$store.dispatch('customers/removeFromCart', this.productId);
-      this.$emit('removeFromCart', this.productId);
+      this.$store.dispatch('customers/removeFromCart', this.id);
+      this.$emit('removeFromCart', this.id);
     },
   },
 };

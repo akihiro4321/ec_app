@@ -2,17 +2,57 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.ec_app.infrastructure.repository.mapper.OrderMapper">
-  <insert id="insertOrderItem" useGeneratedKeys="true">
-    INSERT INTO 
-      ORDER_ITEMS (USER_ID, SUB_TOTAL)
+  <resultMap id="OrderDetailsMap" type="com.example.ec_app.entity.OrderDetailDto">
+    <id property="orderDetailId" column="order_detail_id"/>
+    <result property="orderId" column="order_id"/>
+    <result property="quantity" column="quantity"/>
+    <result property="orderPrice" column="order_price"/>
+    <association property="product" javaType="com.example.ec_app.model.Product">
+      <id property="productId" column="product_id"/>
+      <result property="productName" column="product_name"/>
+      <result property="imageUrl" column="image_url"/>
+      <result property="price" column="price"/>
+      <result property="description" column="description"/>
+    </association>
+  </resultMap>
+  
+  <insert id="insertOrderItem" useGeneratedKeys="true" keyColumn="order_id" keyProperty="orderId">
+    INSERT INTO
+      ORDER_ITEMS (USER_ID, ORDER_DATE, TOTAL_COST)
     VALUES
-      (#{userId}, #{subTotal})
+      (#{userId}, #{orderDate}, #{totalCost})
   </insert>
 
   <insert id="insertOrderDetail">
     INSERT INTO
       ORDERS_DETAILS (ORDER_ID, PRODUCT_ID, QUANTITY, ORDER_PRICE)
     VALUES
-      (#{orderId}, #{productId}, #{quantity}, #{order_price})
+      (#{orderId}, #{productId}, #{quantity}, #{orderPrice})
   </insert>
+
+  <select id="selectOrderItemsByUserId">
+    SELECT * FROM ORDER_ITEMS WHERE USER_ID = #{userId}
+  </select>
+
+  <select id="selectOrderDetails" resultMap="OrderDetailsMap">
+    SELECT
+      dts.ORDER_DETAIL_ID,
+      dts.ORDER_ID,
+      dts.QUANTITY,
+      dts.ORDER_PRICE,
+      ps.PRODUCT_ID,
+      ps.DESCRIPTION,
+      ps.IMAGE_URL,
+      ps.PRODUCT_NAME
+    FROM
+      ORDERS_DETAILS AS dts
+      INNER JOIN PRODUCTS AS ps
+        ON dts.PRODUCT_ID = ps.PRODUCT_ID
+    WHERE dts.ORDER_ID IN
+      <foreach item="item" index="index" collection="orderIds"
+      open="(" separator="," close=")">
+        #{item}
+      </foreach>
+  </select>
+
 </mapper>

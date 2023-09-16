@@ -25,6 +25,15 @@
       )
   </insert>
 
+  <select id="selectQuantityByUserAndProductId">
+    SELECT
+      QUANTITY
+    FROM
+      CART_ITEMS
+    WHERE
+      USER_ID = #{userId} AND PRODUCT_ID = #{productId}
+  </select>
+
   <select id="selectCartItems" parameterType="int" resultMap="CartItemsMap">
     SELECT
       C.ID,
@@ -39,7 +48,7 @@
       INNER JOIN PRODUCTS AS P
         ON C.PRODUCT_ID = P.PRODUCT_ID
     WHERE
-      C.USER_ID = #{userId} AND P.STATUS = 0
+      C.USER_ID = #{userId} AND P.DISABLED = FALSE
   </select>
 
   <update id="updateQuantity">
@@ -47,8 +56,17 @@
     WHERE USER_ID = #{userId} AND PRODUCT_ID = #{productId}
   </update>
 
-  <delete id="removeProduct">
+  <!-- <delete id="removeProduct">
     DELETE FROM CART_ITEMS WHERE USER_ID = #{userId} AND PRODUCT_ID = #{productId}
+  </delete> -->
+
+  <delete id="removeCartItems">
+    DELETE FROM CART_ITEMS
+    WHERE ID IN
+      <foreach item="item" index="index" collection="cartItemIdList"
+      open="(" separator="," close=")">
+        #{item}
+      </foreach>
   </delete>
 
 </mapper>

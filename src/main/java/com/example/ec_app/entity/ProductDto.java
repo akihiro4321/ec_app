@@ -11,7 +11,7 @@ public class ProductDto {
     private String imageUrl;
     private String productName;
     private BigDecimal price;
-    private Integer status;
+    private boolean disabled;
     private OffsetDateTime createdAt;
     private Integer categoryId;
 }

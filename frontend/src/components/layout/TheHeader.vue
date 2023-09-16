@@ -5,23 +5,38 @@
         <router-link to="/">EC Site</router-link>
       </h1>
       <ul>
-        <li>
+        <li v-if="isLoggedIn">
           <router-link to="/cart">Cart</router-link>
         </li>
-        <li>
+        <li v-if="isLoggedIn">
           <router-link to="/orders/history">Order History</router-link>
         </li>
-        <li>
-          <router-link to="/auth">Login</router-link>
+        <li v-if="isLoggedIn">
+          <base-button @click="logout">Logout</base-button>
         </li>
-        <li>
-          <base-button>Logout</base-button>
+        <li v-else>
+          <router-link to="/auth">Login</router-link>
         </li>
       </ul>
     </nav>
   </header>
 </template>
 
+<script>
+export default {
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters.isAuthenticated;
+    },
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout');
+      this.$router.replace('/products');
+    },
+  },
+};
+</script>
 
 <style scoped>
 header {

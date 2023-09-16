@@ -17,9 +17,9 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public List<ProductResponse> findAll() {
-        List<ProductResponse> res =
+        final List<ProductResponse> res =
                 productRepository.findAll().stream().map(productDto -> {
-                    ProductResponse productRes =
+                    final ProductResponse productRes =
                             modelMapper.map(productDto, ProductResponse.class);
                     return productRes;
                 }).collect(Collectors.toList());

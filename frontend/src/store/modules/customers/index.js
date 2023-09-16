@@ -7,6 +7,7 @@ export default {
   state() {
     return {
       cart: null,
+      orderHistory: null,
     };
   },
   mutations,
@@ -30,4 +31,34 @@ export default {
 //     },
 //     ...
 //   ]
+// }
+
+// ex) state.orderHistory
+// {
+//   orders: [
+//     {
+//       orderItem: {
+//         orderId: 1,
+//         orderDate: '2023-09-09T02:33:27.774681Z',
+//         totalCost: 51300,
+//       },
+//       products: [
+//         {
+//           productId: 1,
+//           productName: 'Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops',
+//           imageUrl: null,
+//           orderPrice: 1000,
+//           quantity: 3,
+//         },
+//         {
+//           productId: 2,
+//           productName: 'Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops',
+//           imageUrl: null,
+//           orderPrice: 2000,
+//           quantity: 2,
+//         },
+//       ],
+//     },
+//     another order ...
+//   ];
 // }

@@ -1,13 +1,13 @@
 <template>
   <div class="order-confirmation-container">
     <h1 class="order-confirmation-header">Order Confirmation</h1>
-    <div v-for="orderItem in orderItems" :key="orderItem.id">
+    <div v-for="cartItem in cartItems" :key="cartItem.id">
       <order-item
-        :product-name="orderItem.product.name"
-        :price="orderItem.product.price"
-        :sub-total="orderItem.subTotal"
-        :quantity="orderItem.quantity"
-        :image-url="orderItem.product.imageUrl"
+        :product-name="cartItem.product.productName"
+        :price="cartItem.product.price"
+        :sub-total="cartItem.subTotal"
+        :quantity="cartItem.quantity"
+        :image-url="cartItem.product.imageUrl"
       ></order-item>
     </div>
     <h2 class="order-total">Total: ¥{{ totalCost }}</h2>
@@ -27,7 +27,7 @@ export default {
   },
   data() {
     return {
-      orderItems: null,
+      cartItems: null,
       totalCost: 0,
     };
   },
@@ -45,14 +45,14 @@ export default {
       await this.$store.dispatch('customers/loadCart');
     },
     getOrder() {
-      const order = this.$store.getters['customers/getCart'];
-      this.orderItems = order.cartItems;
-      for (let orderItem of this.orderItems) {
+      const cart = this.$store.getters['customers/getCart'];
+      this.cartItems = cart.cartItems;
+      for (let cartItem of this.cartItems) {
         const subTotal = this.calcPrice(
-          orderItem.product.price,
-          orderItem.quantity
+          cartItem.product.price,
+          cartItem.quantity
         );
-        orderItem['subTotal'] = subTotal;
+        cartItem['subTotal'] = subTotal;
       }
       this.totalCost = this.calcTotalCost();
     },
@@ -60,13 +60,16 @@ export default {
       return price * quantity;
     },
     calcTotalCost() {
-      const totalCost = this.orderItems.reduce(function (sum, orderItem) {
-        return sum + orderItem.totalPrice;
+      const totalCost = this.cartItems.reduce(function (sum, cartItem) {
+        return sum + cartItem.totalPrice;
       }, 0);
       return totalCost;
     },
     confirmOrder() {
-      this.$store.dispatch('customers/confirmOrder');
+      this.$store.dispatch('customers/confirmOrder', {
+        cartItems: this.cartItems,
+        totalCost: this.totalCost,
+      });
     },
   },
 };

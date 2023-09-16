@@ -1,6 +1,7 @@
 logging:
   level:
     root: INFO
+    com.example.ec_app.infrastructure.repository.mapper: DEBUG
 
 spring:
   datasource:
@@ -15,3 +16,11 @@ spring:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
+
+application:
+  security:
+    jwt:
+      secret-key: d452c4cb76b3ef7fe68871ca953c15937d2928114845b9662abc47c08f661e40
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
