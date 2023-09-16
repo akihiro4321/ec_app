@@ -52,4 +52,8 @@ public class LoginUserDetails implements UserDetails {
         return !userDto.isDisabled();
     }
 
+    public Integer getUserId() {
+        return userDto.getUserId();
+    }
+
 }

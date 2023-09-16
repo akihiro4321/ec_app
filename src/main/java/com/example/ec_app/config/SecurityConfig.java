@@ -31,23 +31,23 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(final HttpSecurity http)
             throws Exception {
 
-        http.csrf().disable()
-                .cors()
-                .configurationSource(this.corsConfigurationSource())
-                .and()
+        http.csrf(csrf -> csrf.disable())
+                .cors(cors -> cors
+                        .configurationSource(this.corsConfigurationSource()))
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**", "/api/products/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .sessionManagement(management -> management
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .logout()
-                .logoutUrl("/api/auth/logout")
-                .addLogoutHandler(logoutHandler)
-                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder
-                        .clearContext());
+                .logout(logout -> logout
+                        .logoutUrl("/api/auth/logout")
+                        .addLogoutHandler(logoutHandler)
+                        .logoutSuccessHandler(
+                                (request, response, authentication) -> SecurityContextHolder
+                                        .clearContext()));
         return http.build();
     }
 

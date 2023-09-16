@@ -32,7 +32,6 @@ public class OrderService {
         final OffsetDateTime checkoutDt = OffsetDateTime.now();
         final OrderItemDto orderDto = OrderItemDto.builder().userId(userId)
                 .orderDate(checkoutDt).totalCost(order.getTotalCost()).build();
-        // TODO トランザクション管理
         orderRepository.saveOrderItem(orderDto);
         order.getCartItems().stream().forEach(cartItem -> {
             orderRepository.saveOrderDetail(orderDto.getOrderId(),
@@ -55,15 +54,22 @@ public class OrderService {
                     orderRepository.selectOrderDetails(orderIds);
             orders = orderItems.stream().map(orderItem -> {
                 final List<OrderedProduct> products = orderDetails.stream()
-                        .filter(e -> e.getOrderId() == orderItem.getOrderId())
+                        .filter(e -> e.getOrderId() == orderItem
+                                .getOrderId())
                         .map(detail -> {
                             return OrderedProduct.builder()
-                                    .productId(detail.getProduct().getProductId())
+                                    .productId(detail
+                                            .getProduct()
+                                            .getProductId())
                                     .productName(
-                                            detail.getProduct().getProductName())
-                                    .imageUrl(detail.getProduct().getImageUrl())
-                                    .orderPrice(detail.getOrderPrice())
-                                    .quantity(detail.getQuantity()).build();
+                                            detail.getProduct()
+                                                    .getProductName())
+                                    .imageUrl(detail.getProduct()
+                                            .getImageUrl())
+                                    .orderPrice(detail
+                                            .getOrderPrice())
+                                    .quantity(detail.getQuantity())
+                                    .build();
                         }).collect(Collectors.toList());
                 return new Order(orderItem, products);
             }).collect(Collectors.toList());

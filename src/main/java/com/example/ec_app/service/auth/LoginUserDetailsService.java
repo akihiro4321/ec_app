@@ -1,7 +1,6 @@
 package com.example.ec_app.service.auth;
 
 import java.util.Optional;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,7 @@ public class LoginUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(final String email)
+    public LoginUserDetails loadUserByUsername(final String email)
             throws UsernameNotFoundException {
         final Optional<UserDto> userDto = userRepository.findByEmail(email);
         return userDto.map(user -> new LoginUserDetails(user)).orElseThrow(

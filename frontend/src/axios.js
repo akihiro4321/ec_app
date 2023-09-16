@@ -27,6 +27,7 @@ axiosInstance.interceptors.response.use(
       case 400:
         return Promise.reject(error);
       case 401:
+        // TODO リフレッシュトークンで再認証トライする
         return Promise.reject(error);
       case 403:
         console.log(error);
