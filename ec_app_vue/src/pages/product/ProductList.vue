@@ -39,8 +39,8 @@ export default {
       keyword: '',
     };
   },
-  created() {
-    this.loadProducts();
+  async created() {
+    await this.loadProducts();
     this.selectedProducts = this.$store.getters['products/products'];
   },
   methods: {
