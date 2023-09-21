@@ -1,13 +1,14 @@
 package com.example.ec_app.exception;
 
 import java.util.List;
-import lombok.Data;
+
+import lombok.Getter;
 import lombok.NonNull;
 
 /**
  * アプリケーションでバリデーションエラーがある場合に発行される例外クラス
  */
-@Data
+@Getter
 public class ApplicationValidationException extends ApplicationException {
 
     private final List<String> items;

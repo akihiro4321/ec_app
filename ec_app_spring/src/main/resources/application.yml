@@ -5,9 +5,10 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/ecdb
-    username: okuya
-    password: 0627
+    url: jdbc:postgresql://postgresql:5432/ecdb
+    # url: jdbc:postgresql://localhost:5432/ecdb
+    username: ecappuser
+    password: ecapppwd
     driver-class-name: org.postgresql.Driver
   flyway:
     enabled: true

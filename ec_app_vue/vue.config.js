@@ -3,14 +3,14 @@ module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
     port: 8081,
-    host: 'localhost',
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        secure: false,
-      },
-    },
+    host: 'vue',
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:8080',
+    //     changeOrigin: true,
+    //     secure: false,
+    //   },
+    // },
   },
   configureWebpack: {
     devtool: 'source-map',

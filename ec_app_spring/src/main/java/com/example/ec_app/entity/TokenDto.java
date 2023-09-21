@@ -1,6 +1,7 @@
 package com.example.ec_app.entity;
 
 import com.example.ec_app.constant.TokenType;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class TokenDto {
 
     public String token;
 
+    @Builder.Default
     public TokenType tokenType = TokenType.BEARER;
 
     public boolean revoked;
