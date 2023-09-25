@@ -1,52 +1,22 @@
 <template>
-  <div class="product-container">
-    <!-- 商品説明欄 -->
-    <img class="product-image" :src="imageUrl" alt="Product Image" />
-    <div class="product-info">
-      <h1>{{ selectedProduct.productName }}</h1>
-    </div>
-    <div class="price">¥{{ selectedProduct.price }}</div>
-    <div class="description">
-      <h2>Description</h2>
-      <p>{{ selectedProduct.description }}</p>
-    </div>
-    <base-button type="button" mode="add-to-cart" @click="addToCart"
-      >Add to Cart</base-button
-    >
-
-    <!-- 商品レビュー欄 -->
-    <div class="reviews">
-      <h2>Customer Reviews</h2>
-      <div class="review">
-        <div class="rating">★★★★★</div>
-        <p>Great product! I love it!</p>
+  <div>
+    <base-dialog :show="!isAuthenticated" title="Unauthorized" @close="close">
+      Please Login
+    </base-dialog>
+    <div class="product-container">
+      <!-- 商品説明欄 -->
+      <img class="product-image" :src="imageUrl" alt="Product Image" />
+      <div class="product-info">
+        <h1>{{ selectedProduct.productName }}</h1>
       </div>
-      <!-- 他のレビューも続く -->
-    </div>
-    <base-button type="button" mode="add-to-cart" @click="addToCart"
-      >Add to Cart</base-button
-    >
-
-    <!-- 関連商品セクション -->
-    <div class="related-products">
-      <h2>Related Products</h2>
-      <div class="product-card">
-        <img src="related_product1.jpg" alt="Related Product 1" />
-        <h3>Related Product 1</h3>
-        <p>$149.99</p>
-        <base-button type="button" mode="add-to-cart" @click="addToCart"
-          >Add to Cart</base-button
-        >
+      <div class="price">¥{{ selectedProduct.price }}</div>
+      <div class="description">
+        <h2>Description</h2>
+        <p>{{ selectedProduct.description }}</p>
       </div>
-      <div class="product-card">
-        <img src="related_product2.jpg" alt="Related Product 2" />
-        <h3>Related Product 2</h3>
-        <p>$129.99</p>
-        <base-button type="button" mode="add-to-cart" @click="addToCart"
-          >Add to Cart</base-button
-        >
-      </div>
-      <!-- 他の関連商品も同様に続く -->
+      <base-button type="button" mode="add-to-cart" @click="addToCart"
+        >Add to Cart</base-button
+      >
     </div>
   </div>
 </template>
@@ -63,6 +33,7 @@ export default {
         imageUrl: '',
       },
       imageUrl: '',
+      isAuthenticated: true,
     };
   },
   created() {
@@ -70,6 +41,12 @@ export default {
   },
   methods: {
     addToCart() {
+      this.isAuthenticated = true;
+      console.log(this.$store.getters.isAuthenticated);
+      if (!this.$store.getters.isAuthenticated) {
+        this.isAuthenticated = false;
+        return;
+      }
       const payload = {
         productId: this.id,
         quantity: 1,
@@ -82,6 +59,9 @@ export default {
         (product) => product.productId === Number(this.id)
       );
       this.imageUrl = require(`@/assets/images/${this.selectedProduct.imageUrl}`);
+    },
+    close() {
+      this.isAuthenticated = true;
     },
   },
 };

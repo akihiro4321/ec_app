@@ -1,0 +1,46 @@
+version: "3.6"
+services:
+  postgresql:
+    container_name: ec_app_db
+    image: postgres:14
+    networks:
+      - ec_app_network
+    ports:
+      - 5432:5432
+    volumes:
+      - ec_app_store:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=ecappuser
+      - POSTGRES_PASSWORD=ecapppwd
+      - POSTGRES_DB=ecdb
+
+  spring-boot:
+    container_name: ec_app_spring
+    build: ./ec_app_spring
+    networks:
+      - ec_app_network
+    command: java -jar ecapp.jar
+    restart: always
+    depends_on:
+      - postgresql
+    ports:
+      - 8080:8080
+    tty: true
+    volumes:
+      - ./ec_app_spring/build/libs/:/app
+  vue:
+    container_name: ec_app_vue
+    build: ./ec_app_vue
+    command: npm run dev-serve
+    networks:
+      - ec_app_network
+    ports:
+      - 8081:8081
+    tty: true
+
+volumes:
+  ec_app_store:
+    driver: local
+
+networks:
+  ec_app_network:
